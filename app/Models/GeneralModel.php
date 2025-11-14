@@ -50,13 +50,14 @@ class GeneralModel extends Model
   }
 
   //透過指定KEY 取得資料，一般是ID 或SNKEY
-  function getByKey($databaseName,$sheetName,$snkey){
+  function getByKey($databaseName,$sheetName,$key,$value)
+	{
     $db = $this -> loadDatabse($databaseName);
     $builder = $db->table($sheetName);
 
-    $builder->where('snkey', $snkey); //依狀況更動 Id或snkey
+    $builder->where($key, $value); //依狀況更動 Id或snkey
     return $builder->get();
-  }
+	}
 
   //新增資料到指定 $sheetName 裡
   function add($databaseName,$sheetName,$data){

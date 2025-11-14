@@ -25,6 +25,15 @@ class General extends BaseController
         return $this->response->setJSON($data);
     }
 
+    function getByKey($databaseName, $sheetName)
+	{
+		$model = new \App\Models\GeneralModel(); //載入指定Model
+		$data = $this->request ->getPost();
+
+		$outdata = $model->getByKey($databaseName,$sheetName,$data['key'],$data['value'])->getResultArray();
+        return $this->response->setJSON($outdata);
+	}
+
     function add($databaseName,$sheetName){
         $model = new \App\Models\GeneralModel(); //載入指定Model
         $data = $this->request->getPost();
@@ -65,6 +74,27 @@ class General extends BaseController
 		}
 
         return $this->response->setJSON($outdata);
+	}
+
+    //刪除多筆記錄
+	function delMultiv3($databaseName, $sheetName){
+		$model = new \App\Models\GeneralModel(); //載入指定Model
+		$data = $this -> request -> getPost();
+		
+		$rs = [];
+		foreach ($data as $key => $value) {
+			$id = $value['snkey'];
+			unset($value['snkey']);
+
+			//記錄刪除的人,時間,內容
+			array_push($rs,array(
+				'addInfo_state' => $model->add($databaseName,'deldata', $value),
+				'del_state'=> $model->del($databaseName,$sheetName,$id)
+			));
+		}
+
+		return $this->response->setJSON($rs);
+
 	}
 
 
